@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <title>UTFHATE</title>
+    <meta charset="utf-8" />
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <textarea id="program" cols="40" rows="10">⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕⌜→⊕⊕⊕⊕⊕⊕⊕→⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕→⊕⊕⊕→⊕←←←←⊖⌟→⊕⊕∘→⊕∘⊕⊕⊕⊕⊕⊕⊕∘∘⊕⊕⊕∘→⊕⊕∘←←⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕⊕∘→∘⊕⊕⊕∘⊖⊖⊖⊖⊖⊖∘⊖⊖⊖⊖⊖⊖⊖⊖∘→⊕∘→∘</textarea>
+    <input id="run" type="submit" value="Run" />
+    <pre id="output"></pre>
+    <script>
+      document.getElementById('run').addEventListener('click', function() {
+        var result;
+        try {
+          result = evaluate(document.getElementById('program').value);
+        } catch(e) {
+          result = e.toString();
+        }
+        document.getElementById('output').innerText = result;
+      }, false);
+    </script>
+  </body>
+</html>
