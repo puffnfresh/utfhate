@@ -1,34 +1,39 @@
 function evaluate(content) {
-    var blocks = content.split(/[⌜⌟]/),
-        result = '',
+    var result = '',
         mem = [],
         pos = {x: 0, y: 0},
-        blockPointer = 0,
         instructionPointer = 0,
-        basicBlocks = [],
-        instruction,
-        i;
+        instruction;
 
-    basicBlocks.push(blocks[0]);
-    for(i = 1; i < blocks.length - 1; i++) {
-        basicBlocks.push('⌜' + blocks[i] + '⌟');
+    function findOpeningPoint(pointer) {
+        var stack = 1;
+
+        while(--pointer > 0) {
+            if(content[pointer] == '⌜') stack--;
+            else if(content[pointer] == '⌟') stack++;
+            if(stack == 0) return pointer;
+        }
+
+        throw new Error('No matching start block');
     }
-    basicBlocks.push(blocks[blocks.length - 1]);
 
-    while(blockPointer < basicBlocks.length) {
+    function findClosingPoint(pointer) {
+        var stack = 1;
+
+        while(++pointer < content.length) {
+            if(content[pointer] == '⌜') stack++;
+            else if(content[pointer] == '⌟') stack--;
+            if(stack == 0) return pointer;
+        }
+
+        throw new Error('No matching end block');
+    }
+
+    while(instructionPointer < content.length) {
         if(!mem[pos.x]) mem[pos.x] = [];
         if(!mem[pos.x][pos.y]) mem[pos.x][pos.y] = 0;
 
-        if(instructionPointer >= basicBlocks[blockPointer].length) {
-            blockPointer++;
-            instructionPointer = 0;
-        }
-
-        if(!basicBlocks[blockPointer]) {
-            break;
-        }
-
-        instruction = basicBlocks[blockPointer][instructionPointer];
+        instruction = content[instructionPointer];
 
         switch(instruction) {
         case '⊕':
@@ -41,14 +46,14 @@ function evaluate(content) {
             break;
         case '⌜':
             if(!mem[pos.x][pos.y]) {
-                blockPointer++;
+                instructionPointer = findClosingPoint(instructionPointer);
             } else {
                 instructionPointer++;
             }
             break;
         case '⌟':
             if(mem[pos.x][pos.y]) {
-                instructionPointer = 0;
+                instructionPointer = findOpeningPoint(instructionPointer);
             } else {
                 instructionPointer++;
             }
